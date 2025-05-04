@@ -1,0 +1,3 @@
+http://localhost/blogHead/wp-json/
+http://localhost/blogHead/wp-json/wp/v2
+http://localhost/blogHead/wp-json/wp/v2/posts
