@@ -243,3 +243,32 @@ function get_most_commented_post() {
         'featured_image' => get_the_post_thumbnail_url($post->ID, 'medium_large'),
     ];
 }
+
+
+add_action('rest_api_init', function () {
+    register_rest_route('wp/v2', '/posts/by-slug/(?P<slug>[a-zA-Z0-9-_]+)', [
+        'methods' => 'GET',
+        'callback' => 'get_post_by_slug',
+        'args' => [
+            'slug' => [
+                'required' => true
+            ],
+        ],
+        'permission_callback' => '__return_true',
+    ]);
+});
+
+function get_post_by_slug($data) {
+    $slug = $data['slug'];
+    $post = get_page_by_path($slug, OBJECT, 'post');
+
+    if (!$post) {
+        return new WP_Error('not_found', 'Post not found', ['status' => 404]);
+    }
+
+    // Add featured image and author details
+    $post_data = get_post($post->ID);
+    $response = rest_ensure_response($post_data);
+
+    return $response;
+}
